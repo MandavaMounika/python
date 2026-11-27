@@ -1,0 +1,44 @@
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    ForeignKey,
+    CheckConstraint
+)
+from sqlalchemy.sql import func
+
+from app.database import Base
+
+
+class InventoryTransaction(Base):
+    __tablename__ = "inventory_transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    product_id = Column(
+        Integer,
+        ForeignKey("products.id"),
+        nullable=False
+    )
+
+    quantity_change = Column(
+        Integer,
+        nullable=False
+    )
+
+    reason = Column(
+        String(30),
+        nullable=False
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+    __table_args__ = (
+        CheckConstraint("quantity_change != 0"),
+    )
